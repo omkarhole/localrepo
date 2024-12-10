@@ -1,0 +1,101 @@
+#include <iostream>
+#define SIZE 5
+using namespace std;
+
+class JobQue {
+private:
+    int que[SIZE];
+    int front, rear;
+
+public:
+    JobQue() { 
+        front = -1; 
+        rear = -1; 
+    }
+
+    int Qfull() {
+        return (rear == SIZE - 1);
+    }
+
+    int insert(int item) {
+        if (Qfull()) {
+            cout << "\nQueue Overflow! Cannot insert job.";
+            return -1;
+        }
+        if (front == -1)
+            front = 0; // Initialize front if queue is empty
+        que[++rear] = item;
+        return rear;
+    }
+
+    int Qempty() {
+        return (front == -1 || front > rear);
+    }
+
+    int delet() {
+        if (Qempty()) {
+            cout << "\nQueue Underflow! No jobs to delete.";
+            return -1;
+        }
+        int item = que[front++];
+        if (front > rear) { // Reset the queue when all elements are deleted
+            front = -1;
+            rear = -1;
+        }
+        cout << "\nThe deleted job is: " << item;
+        return front;
+    }
+
+    void display() {
+        if (Qempty()) {
+            cout << "\nJob Queue is empty!";
+            return;
+        }
+        cout << "\nCurrent Job Queue: ";
+        for (int i = front; i <= rear; i++) {
+            cout << que[i] << " ";
+        }
+        cout << endl;
+    }
+};
+
+int main() {
+    int choice, item;
+    char ans;
+    JobQue obj;
+
+    do {
+        cout << "\nMain Menu";
+        cout << "\n1. Add Job\n2. Delete Job\n3. Display Job Queue";
+        cout << "\nEnter Your Choice: ";
+        cin >> choice;
+
+        switch (choice) {
+        case 1:
+            if (obj.Qfull()) {
+                cout << "\nCannot insert the Job: Queue is full.";
+            } else {
+                cout << "\nEnter the Job number: ";
+                cin >> item;
+                obj.insert(item);
+            }
+            break;
+
+        case 2:
+            obj.delet();
+            break;
+
+        case 3:
+            obj.display();
+            break;
+
+        default:
+            cout << "\nWrong choice!";
+        }
+
+        cout << "\nDo you want to continue? (y/n): ";
+        cin >> ans;
+    } while (ans == 'Y' || ans == 'y');
+
+    return 0;
+}

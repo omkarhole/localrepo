@@ -1,0 +1,28 @@
+def binary_search(arr, target):
+    low, high = 0, len(arr) - 1
+    while low <= high:
+        mid = (low + high) // 2
+        if arr[mid] == target:
+            return True
+        elif arr[mid] < target:
+            low = mid + 1
+        else:
+            high = mid - 1
+    return False
+
+def main():
+    print("Enter roll numbers of students who attended the training program (separated by spaces):")
+    roll_numbers = list(map(int, input().split()))
+    roll_numbers.sort()
+    print(f"Sorted roll numbers: {roll_numbers}")
+    
+    print("Enter the roll number to search:")
+    target = int(input())
+    
+    if binary_search(roll_numbers, target):
+        print(f"Student with roll number {target} attended the training program.")
+    else:
+        print(f"Student with roll number {target} did not attend the training program.")
+
+if __name__ == "__main__":
+    main()

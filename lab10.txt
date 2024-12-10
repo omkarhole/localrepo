@@ -1,0 +1,123 @@
+#include <iostream>
+#include <cstring>
+using namespace std;
+
+class Stack {
+public:
+    char stack_array[50];
+    int top;
+
+    Stack() { top = -1; }
+
+    void push(char symbol) {
+        if (full()) {
+            cout << "\nStack Overflow!\n";
+        } else {
+            stack_array[++top] = symbol;
+        }
+    }
+
+    char pop() {
+        if (empty()) {
+            cout << "\nStack Underflow!\n";
+            return '#';
+        } else {
+            return stack_array[top--];
+        }
+    }
+
+    int empty() { return (top == -1); }
+
+    int full() { return (top == 49); }
+};
+
+class Expression {
+private:
+    char infix[50];
+    char postfix[50];
+    Stack stack;
+
+public:
+    void read() {
+        cout << "\nEnter an infix expression: ";
+        cin >> infix;
+    }
+
+    int white_space(char symbol) {
+        return (symbol == ' ' || symbol == '\t' || symbol == '\0');
+    }
+
+    void convert_to_postfix() {
+        int p = 0;
+        char entry;
+
+        for (int i = 0; infix[i] != '\0'; i++) {
+            if (!white_space(infix[i])) {
+                switch (infix[i]) {
+                    case '(':
+                        stack.push(infix[i]);
+                        break;
+
+                    case ')':
+                        while ((entry = stack.pop()) != '(') {
+                            postfix[p++] = entry;
+                        }
+                        break;
+
+                    case '+':
+                    case '-':
+                    case '*':
+                    case '/':
+                        while (!stack.empty() && prior(infix[i]) <= prior(stack.stack_array[stack.top])) {
+                            postfix[p++] = stack.pop();
+                        }
+                        stack.push(infix[i]);
+                        break;
+
+                    default:
+                        postfix[p++] = infix[i];
+                        break;
+                }
+            }
+        }
+
+        while (!stack.empty()) {
+            postfix[p++] = stack.pop();
+        }
+
+        postfix[p] = '\0';
+        cout << "\nThe postfix expression is: " << postfix << endl;
+    }
+
+    int prior(char symbol) {
+        switch (symbol) {
+            case '/':
+                return 4;
+            case '*':
+                return 3;
+            case '+':
+                return 2;
+            case '-':
+                return 1;
+            case '(':
+                return 0;
+            default:
+                return -1;
+        }
+    }
+};
+
+int main() {
+    char choice = 'y';
+    Expression expr;
+
+    while (choice == 'y' || choice == 'Y') {
+        expr.read();
+        expr.convert_to_postfix();
+
+        cout << "\nDo you want to continue? (y/n): ";
+        cin >> choice;
+    }
+
+    return 0;
+}

@@ -1,0 +1,216 @@
+#include <iostream>
+#include <cstring>
+using namespace std;
+
+struct node {
+    int prn;
+    char name[20];
+    struct node* next;
+};
+
+class Pinnacle {
+public:
+    struct node* start;
+
+    Pinnacle() {
+        start = NULL;
+    }
+
+    void insert();
+    void del();
+    void display();
+    int total();
+    void reverse(struct node*);
+    void concat(Pinnacle&);
+};
+
+void Pinnacle::insert() {
+    cout << "Press:\n1. To insert at the beginning\n2. To insert at the end\n3. To insert after the first node\n";
+    int ch;
+    cin >> ch;
+
+    struct node* temp = new node;
+    temp->next = NULL;
+
+    if (ch == 1) {
+        cout << "Enter name of President: ";
+        cin >> temp->name;
+        cout << "Enter PRN of President: ";
+        cin >> temp->prn;
+
+        temp->next = start;
+        start = temp;
+
+    } else if (ch == 2) {
+        cout << "Enter name of Secretary: ";
+        cin >> temp->name;
+        cout << "Enter PRN of Secretary: ";
+        cin >> temp->prn;
+
+        if (start == NULL) {
+            start = temp;
+        } else {
+            struct node* ptr = start;
+            while (ptr->next != NULL)
+                ptr = ptr->next;
+            ptr->next = temp;
+        }
+
+    } else if (ch == 3) {
+        cout << "Enter name of Member: ";
+        cin >> temp->name;
+        cout << "Enter PRN of Member: ";
+        cin >> temp->prn;
+
+        if (start == NULL || start->next == NULL) {
+            cout << "Cannot insert in the middle; list is too short.\n";
+            delete temp;
+            return;
+        }
+
+        temp->next = start->next;
+        start->next = temp;
+
+    } else {
+        cout << "Invalid choice.\n";
+        delete temp;
+    }
+}
+
+void Pinnacle::del() {
+    if (start == NULL) {
+        cout << "List is empty.\n";
+        return;
+    }
+
+    cout << "Enter the PRN number of the member to delete: ";
+    int k;
+    cin >> k;
+
+    struct node *ptr = start, *prev = NULL;
+
+    while (ptr != NULL && ptr->prn != k) {
+        prev = ptr;
+        ptr = ptr->next;
+    }
+
+    if (ptr == NULL) {
+        cout << "PRN not found.\n";
+        return;
+    }
+
+    if (prev == NULL) {  // Deleting the first node
+        start = ptr->next;
+    } else {  // Deleting an intermediate or last node
+        prev->next = ptr->next;
+    }
+
+    delete ptr;
+    cout << "Entry successfully deleted.\n";
+}
+
+int Pinnacle::total() {
+    int count = 0;
+    struct node* ptr = start;
+    while (ptr != NULL) {
+        count++;
+        ptr = ptr->next;
+    }
+    return count;
+}
+
+void Pinnacle::reverse(struct node* ptr) {
+    if (ptr == NULL)
+        return;
+
+    reverse(ptr->next);
+    cout << "Name: " << ptr->name << "\nPRN: " << ptr->prn << "\n";
+}
+
+void Pinnacle::concat(Pinnacle& q) {
+    if (start == NULL) {
+        start = q.start;
+        return;
+    }
+
+    struct node* ptr = start;
+    while (ptr->next != NULL) {
+        ptr = ptr->next;
+    }
+    ptr->next = q.start;
+}
+
+void Pinnacle::display() {
+    if (start == NULL) {
+        cout << "The list is empty.\n";
+        return;
+    }
+
+    cout << "The details of students are:\n";
+    struct node* ptr = start;
+    int k = 1;
+    while (ptr != NULL) {
+        cout << k++ << ". Name: " << ptr->name << "\n   PRN: " << ptr->prn << "\n";
+        ptr = ptr->next;
+    }
+}
+
+int main() {
+    Pinnacle p, q;
+    char in = 'y';
+
+    while (in == 'y' || in == 'Y') {
+        cout << "Press:\n1. Add/Delete members\n2. Compute total members\n3. Display members\n";
+        cout << "4. Display list in reverse order\n5. Concatenate two lists\n";
+        int ch;
+        cin >> ch;
+
+        switch (ch) {
+        case 1: {
+            cout << "Press:\n1. To insert\n2. To delete\n";
+            int k;
+            cin >> k;
+            if (k == 1) {
+                int m;
+                cout << "Enter the number of members to add: ";
+                cin >> m;
+                for (int i = 0; i < m; ++i) {
+                    p.insert();
+                }
+            } else if (k == 2) {
+                p.del();
+            } else {
+                cout << "Invalid choice.\n";
+            }
+            break;
+        }
+        case 2:
+            cout << "Total number of entries: " << p.total() << "\n";
+            break;
+        case 3:
+            p.display();
+            break;
+        case 4:
+            p.reverse(p.start);
+            break;
+        case 5: {
+            cout << "Enter the number of members for the second list: ";
+            int m;
+            cin >> m;
+            for (int i = 0; i < m; ++i) {
+                q.insert();
+            }
+            p.concat(q);
+            cout << "Lists successfully concatenated.\n";
+            break;
+        }
+        default:
+            cout << "Invalid choice.\n";
+        }
+
+        cout << "Do you want to continue? (y/n): ";
+        cin >> in;
+    }
+
+    return 0;
+}

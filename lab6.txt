@@ -1,0 +1,105 @@
+import array as arr
+
+def accept_perc():
+    a = arr.array('I', [])
+    no_stud = int(input("Enter the number of Students: "))
+    for i in range(no_stud):
+        a.append(int(input("Enter the Roll Number: ")))
+    return a
+
+def print_roll(a):
+    for i in range(len(a)):
+        print("\t", a[i], end=" ")
+    print()
+
+def ins_sort(a):
+    for i in range(1, len(a)):
+        key = a[i]
+        j = i - 1
+        while j >= 0 and key < a[j]:
+            a[j + 1] = a[j]
+            j -= 1
+        a[j + 1] = key
+    return a
+
+def ternarySearch_NR(arr, to_find):
+    left = 0
+    right = len(arr) - 1
+    while left <= right:
+        mid1 = left + (right - left) // 3
+        mid2 = left + 2 * (right - left) // 3
+        if to_find == arr[left]:
+            return left
+        elif to_find == arr[right]:
+            return right
+        elif to_find < arr[left] or to_find > arr[right]:
+            return -1
+        elif to_find <= arr[mid1]:
+            right = mid1
+        elif to_find > arr[mid1] and to_find <= arr[mid2]:
+            left = mid1 + 1
+            right = mid2
+        else:
+            left = mid2 + 1
+    return -1
+
+def ternarySearch_R(arr, left, right, to_find):
+    if right >= left:
+        mid1 = left + (right - left) // 3
+        mid2 = right - (right - left) // 3
+        if arr[mid1] == to_find:
+            return mid1
+        if arr[mid2] == to_find:
+            return mid2
+        if to_find < arr[mid1]:
+            return ternarySearch_R(arr, left, mid1 - 1, to_find)
+        elif to_find > arr[mid2]:
+            return ternarySearch_R(arr, mid2 + 1, right, to_find)
+        else:
+            return ternarySearch_R(arr, mid1 + 1, mid2 - 1, to_find)
+    return -1
+
+if __name__ == "__main__":
+    unsort_A = arr.array('I', [])
+    ins_sort_A = arr.array('I', [])
+    flag = 1
+
+    while flag == 1:
+        menu = ("1. Accept Student Roll Numbers\n"
+                "2. Display the Roll Numbers\n"
+                "3. Sort Roll Numbers\n"
+                "4. Ternary Search (Non-Recursive)\n"
+                "5. Ternary Search (Recursive)\n"
+                "6. Exit")
+        print(menu)
+        choice = int(input("Enter your choice: "))
+        
+        if choice == 1:
+            unsort_A = accept_perc()
+        elif choice == 2:
+            print_roll(unsort_A)
+        elif choice == 3:
+            print("Elements after sorting using Insertion Sort:")
+            ins_sort_A = ins_sort(unsort_A)
+            print_roll(ins_sort_A)
+        elif choice == 4:
+            roll = int(input("Enter the Roll Number to search: "))
+            index = ternarySearch_NR(ins_sort_A, roll)
+            if index != -1:
+                print("The element", roll, "is at the index", index)
+            else:
+                print("Element", roll, "not found!")
+        elif choice == 5:
+            roll = int(input("Enter the Roll Number to search: "))
+            left = 0
+            right = len(ins_sort_A) - 1
+            index = ternarySearch_R(ins_sort_A, left, right, roll)
+            if index != -1:
+                print("The element", roll, "is at the index", index)
+            else:
+                print("Element", roll, "not found!")
+        elif choice == 6:
+            print("Exiting...")
+            flag = 0
+        else:
+            print("Wrong choice")

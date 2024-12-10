@@ -1,0 +1,101 @@
+#include <iostream>
+#include <cstring>
+#include <cctype>
+using namespace std;
+
+#define SIZE 50
+
+class Stack {
+private:
+    char input_str[SIZE];
+    char stack_data[SIZE];
+    int top, length;
+
+public:
+    Stack() {
+        top = -1;
+        length = 0;
+    }
+
+    void push(char temp) {
+        if (top == SIZE - 1) {
+            cout << "\nStack Overflow!!!\n";
+            return;
+        }
+        top++;
+        stack_data[top] = temp;
+    }
+
+    char pop() {
+        if (top == -1) {
+            cout << "\nStack Underflow!!!\n";
+            return '\0';
+        }
+        char temp = stack_data[top];
+        top--;
+        return temp;
+    }
+
+    void input_data() {
+        cout << "\nEnter a String: ";
+        cin.getline(input_str, SIZE);
+        length = strlen(input_str);
+    }
+
+    void get_characters_only() {
+        char temp[SIZE];
+        int j = 0;
+
+        for (int i = 0; i < length; i++) {
+            if (isalpha(input_str[i])) {
+                temp[j++] = tolower(input_str[i]);
+            }
+        }
+        temp[j] = '\0';  // Null-terminate the string
+        strcpy(input_str, temp);
+        length = j; // Update length after filtering
+    }
+
+    void check_palindrome() {
+        for (int i = 0; i < length; i++)
+            push(input_str[i]);
+
+        for (int i = 0; i < length; i++) {
+            if (input_str[i] != pop()) {
+                cout << "\nGiven string is NOT a Palindrome!!!\n";
+                return;
+            }
+        }
+        cout << "\nGiven string is a Palindrome!!!\n";
+    }
+
+    void display_original() {
+        for (int i = 0; i < length; i++)
+            cout << input_str[i];
+        cout << endl;
+    }
+
+    void display_reverse() {
+        for (int i = length - 1; i >= 0; i--)
+            cout << input_str[i];
+        cout << endl;
+    }
+};
+
+int main() {
+    Stack obj;
+
+    obj.input_data();
+    obj.get_characters_only();
+
+    cout << "\nDisplaying the original String (after filtering): ";
+    obj.display_original();
+
+    cout << "Displaying the reversed String: ";
+    obj.display_reverse();
+
+    cout << "\nChecking for Palindrome...\n";
+    obj.check_palindrome();
+
+    return 0;
+}
